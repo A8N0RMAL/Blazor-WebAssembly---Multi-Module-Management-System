@@ -1,0 +1,27 @@
+﻿@page "/person"
+
+<PageTitle>PersonComponent</PageTitle>
+
+<h3>Person Component</h3>
+
+@* <input @bind-value="Person.FirstName" />
+<select @bind="Person.Id" @bind:event="oninput" class="">
+    @for (int i = 1; i <= 100; i++)
+    {
+        <option value="@i">@i</option>
+}
+</select>
+ *@
+
+<!--Display List of people-->
+<h2>People</h2>
+<ul>
+    @foreach (var p in People)
+    {
+        <li>@p.Name, Age: @p.Age</li>
+    }
+</ul>
+
+@* @code {
+    // C# Code in PersonComponent.razor.cs
+} *@

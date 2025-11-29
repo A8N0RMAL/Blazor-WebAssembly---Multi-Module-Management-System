@@ -1,0 +1,75 @@
+﻿@page "/employees"
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Employees</PageTitle>
+
+<h3>Employee List</h3>
+
+@* <button class="btn btn-primary mb-3" @onclick="AddNewEmployee">Add New Employee</button>
+ *@
+
+@if (employees == null || !employees.Any())
+{
+    <p>No employees found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Salary</th>
+                <th>Department ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>@employee.Id</td>
+                    <td>@employee.Name</td>
+                    <td>@employee.Salary.ToString("C")</td>
+                    <td>@employee.DepartmentId</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" @onclick="() => EditEmployee(employee.Id)">Edit</button>
+                        @* <button class="btn btn-sm btn-danger ms-1" @onclick="() => DeleteEmployee(employee.Id)">Delete</button> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Employee> employees = new List<Employee>();
+
+    protected override void OnInitialized()
+    {
+        LoadEmployees();
+    }
+
+    private void LoadEmployees()
+    {
+        employees = EmployeeService.GetAllEmployees();
+    }
+
+    // private void AddNewEmployee()
+    // {
+    //     NavigationManager.NavigateTo("/add-employee");
+    // }
+
+    private void EditEmployee(int id)
+    {
+        NavigationManager.NavigateTo($"/edit-employee/{id}");
+    }
+
+    // private void DeleteEmployee(int id)
+    // {
+    //     // Implement delete logic here
+    //     EmployeeService.DeleteEmployee(id);
+    //     LoadEmployees(); // Refresh the list
+    // }
+}

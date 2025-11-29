@@ -1,0 +1,46 @@
+﻿@page "/products"
+@using BlazorApp.Models
+@inject ProductService ProductService
+
+<PageTitle>Products</PageTitle>
+
+<h3>Products</h3>
+
+@if (products == null)
+{
+    <p>Loading products...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.Name</td>
+                    <td>
+                        <a href="/products/@product.Id" class="btn btn-primary">View</a>
+                        <a href="/editproduct/@product.Id" class="btn btn-secondary">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Product> products = new();
+
+    protected override void OnInitialized()
+    {
+        products = ProductService.GetAllProducts();
+    }
+}

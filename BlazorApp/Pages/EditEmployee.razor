@@ -1,0 +1,106 @@
+﻿@page "/edit-employee/{id:int}"
+@inject EmployeeService EmployeeService
+@inject DepartmentService DepartmentService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit Employee</PageTitle>
+
+<h3>Edit Employee</h3>
+
+@if (employee == null)
+{
+    <p>Loading employee data...</p>
+}
+else
+{
+    <!--Method for EditForm => Post -->
+    <!--Binding Obj. property ==> input, Validation -->
+    <EditForm Model="employee" OnValidSubmit="SaveEmployee" OnInvalidSubmit="InvalidSubmission">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <InputText id="name" @bind-Value="employee.Name" class="form-control" />
+            @* <ValidationMessage For="@(() => employee.Name)" class="text-danger" /> *@
+        </div>
+
+        <div class="mb-3">
+            <label for="salary" class="form-label">Salary:</label>
+            <InputNumber id="salary" @bind-Value="employee.Salary" class="form-control" />
+            @* <ValidationMessage For="@(() => employee.Salary)" class="text-danger" /> *@
+        </div>
+
+        <div class="mb-3">
+            <label for="departmentId" class="form-label">Department</label>
+            <InputSelect id="departmentId" @bind-Value="employee.DepartmentId" class="form-select">
+                <option value="">Select Department</option>
+                @foreach (var dept in departments)
+                {
+                    <option value="@dept.Id">@dept.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Save</button>
+        <button type="button" class="btn btn-secondary mt-2 ms-2" @onclick="Cancel">Cancel</button>
+
+    </EditForm>
+
+    @*Display Employee*@
+    @* <div class="mt-4">
+        <h4>Current Employee Details:</h4>
+        <p>Employee ID: @employee.Id</p>
+        <p>Employee Name: @employee.Name</p>
+        <p>Employee Salary: @employee.Salary</p>
+        <p>Employee Department ID: @employee.DepartmentId</p>
+    </div> *@
+}
+
+
+@code {
+    [Parameter]
+    public int id { get; set; } // Parameter to capture the employee ID from the URL
+    public Employee employee { get; set; } = new Employee(); // Employee object to hold the details
+    public List<Department> departments { get; set; } = new List<Department>();
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            // Fetch the employee details based on the provided ID
+            employee = EmployeeService.GetEmployeeById(id);
+
+            if (employee == null)
+            {
+                Console.WriteLine($"Employee with ID {id} not found");
+                return;
+            }
+
+            // Fetch all departments for the dropdown
+            departments = DepartmentService.GetAllDepartments();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading employee: {ex.Message}");
+        }
+
+        base.OnInitialized();
+    }
+
+    void SaveEmployee()
+    {
+        Console.WriteLine("Employee saved successfully!");
+        NavigationManager.NavigateTo("/employees"); // Navigate back to employee list
+    }
+
+    void InvalidSubmission(EditContext editContext)
+    {
+        Console.WriteLine("Form submission is invalid. Please correct the errors and try again.");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/employees");
+    }
+}

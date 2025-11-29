@@ -1,0 +1,16 @@
+﻿@page "/employee-details/{id:int}"
+@inject EmployeeService EmployeeService
+
+<PageTitle>Employee Details</PageTitle>
+
+@*Display Employee Details*@
+<h3>Employee Details</h3>
+<p>Employee ID: @employee.Id</p>
+<p>Employee Name: @employee.Name</p>
+<p>Employee Salary: @employee.Salary</p>
+<p>Employee Department ID: @employee.DepartmentId</p>
+
+
+@code {
+    
+}

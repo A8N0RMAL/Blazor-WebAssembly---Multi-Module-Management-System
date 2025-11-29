@@ -1,0 +1,54 @@
+﻿@page "/products/{id:int}"
+
+@inject ProductService ProductService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Product Details</PageTitle>
+
+@if (product == null)
+{
+    <p>Product not found</p>
+}
+
+else
+{
+    <div>
+        <button @onclick="GoBack">← Back to Products</button>
+        <h2>Product Details</h2>
+
+        <div>
+            <strong>ID:</strong> @product.Id
+        </div>
+
+        <div>
+            <strong>Name:</strong> @product.Name
+        </div>
+
+        <div>
+            <strong>Description:</strong> @product.Description
+        </div>
+
+        <div>
+            <strong>Price:</strong> $@product.Price
+        </div>
+
+        <a href="/editproduct/@product.Id" class="btn btn-primary">Edit Product</a>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Product? product;
+
+    protected override void OnParametersSet()
+    {
+        product = ProductService.GetProductById(Id);
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/products");
+    }
+}

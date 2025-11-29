@@ -1,0 +1,98 @@
+﻿@page "/department"
+
+<h3>Department Student Lookup</h3>
+
+@if (departments == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="departmentSelect" class="form-label">Select a Department:</label>
+            <select @bind="selectedDepartmentId" class="form-select" id="departmentSelect">
+                <option value="0">-- Select Department --</option>
+                @foreach (var dept in departments)
+                {
+                    <option value="@dept.Id">@dept.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <button @onclick="GetStudents" class="btn btn-primary">Get Students</button>
+    </div>
+
+    @if (filteredStudents != null && filteredStudents.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Department</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in filteredStudents)
+                {
+                    <tr>
+                        <td>@student.Id</td>
+                        <td>@student.Name</td>
+                        <td>@student.Address</td>
+                        <td>@student.Department?.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (filteredStudents?.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            No students found for the selected department.
+        </div>
+    }
+}
+
+@code {
+    private List<Department> departments = new();
+    private List<Student> allStudents = new();
+    private List<Student>? filteredStudents;
+    private int selectedDepartmentId = 0;
+
+    protected override void OnInitialized()
+    {
+        // Load our seed data
+        departments = SeedData.GetDepartments();
+        allStudents = SeedData.GetStudents();
+
+        // Link students to their respective departments
+        foreach (var student in allStudents)
+        {
+            student.Department = departments.FirstOrDefault(d => d.Id == student.DepartmentId);
+        } 
+    }
+
+    private void GetStudents()
+    {
+        // Clear previous results
+        filteredStudents = null;
+
+        // Check if a valid department is selected (value is not 0)
+        if (selectedDepartmentId > 0)
+        {
+            // Filter students based on the selected department ID
+            filteredStudents = allStudents
+                                .Where(s => s.DepartmentId == selectedDepartmentId)
+                                .ToList();
+        }
+        else
+        {
+            // Optional: Handle the case where no department is selected.
+            // You could show an alert message here instead of just doing nothing.
+        }
+    }
+}

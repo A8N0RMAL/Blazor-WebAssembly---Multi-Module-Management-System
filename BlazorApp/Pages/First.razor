@@ -1,0 +1,31 @@
+﻿@page "/first"
+
+<PageTitle>First Page</PageTitle>
+
+<h1>First Page</h1>
+
+<p role="status">Button clicked @currentCount times.</p>
+
+<!--Handle Event Using C#-->
+<button class="btn btn-primary" @onclick="HandleClick">Click me</button>
+@* @onclick takes a delegate to a method that returns void or Task *@
+
+<!--Two way binding-->
+<h3>Two Way Binding</h3>
+<input @bind="currentCount" class="form-control"/>
+
+<!--Two way binding with update-->
+<!--Event binding-->
+<h3>Event Binding</h3>
+<input @bind:event="oninput" @bind="currentCount" class="form-control" />
+
+@code {
+    // Class First : ComponentBase
+    private int currentCount = 0;
+    
+    private void HandleClick()
+    {
+        currentCount++;
+    }
+
+}
